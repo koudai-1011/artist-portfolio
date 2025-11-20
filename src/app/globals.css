@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-noto-serif), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  
+  /* Pop Art Color Palette */
+  --color-pop-red: #FF3366;
+  --color-pop-blue: #3366FF;
+  --color-pop-yellow: #FFCC00;
+  --color-pop-green: #00FF99;
+  --color-pop-pink: #FF66CC;
+  --color-pop-orange: #FF6633;
+  --color-pop-purple: #9933FF;
+}
+
+/* Pop Art Base Styles */
+:root {
+  --background: #FFFEF0;
+  --foreground: #000000;
+  --border-width: 4px;
+  --shadow-offset: 6px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #1a1a1a;
+    --foreground: #FFFEF0;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Pop Art Utilities */
+@utility pop-border {
+  border: var(--border-width) solid black;
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 black;
+}
+
+@utility pop-border-white {
+  border: var(--border-width) solid white;
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 white;
+}
+
+@utility pop-shadow {
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 black;
+}
+
+@utility pop-shadow-lg {
+  box-shadow: 8px 8px 0 black;
+}
+
+@utility dots-bg {
+  background-image: radial-gradient(circle, black 1px, transparent 1px);
+  background-size: 10px 10px;
+}
+
+@utility container-custom {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+/* Pop Art Button Base */
+.btn-pop {
+  @apply px-6 py-3 font-bold uppercase tracking-wider;
+  @apply border-4 border-black transition-all duration-200;
+  @apply hover:translate-x-1 hover:translate-y-1;
+  box-shadow: 4px 4px 0 black;
+}
+
+.btn-pop:hover {
+  box-shadow: 2px 2px 0 black;
+}
+
+/* Halftone Pattern */
+@utility halftone-bg {
+  background-image: radial-gradient(circle, rgba(0,0,0,0.2) 1.5px, transparent 1.5px);
+  background-size: 8px 8px;
+}
