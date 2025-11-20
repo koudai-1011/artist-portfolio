@@ -60,6 +60,14 @@ export type News = {
 // Check if API key is present
 const isMock = !process.env.MICROCMS_SERVICE_DOMAIN || !process.env.MICROCMS_API_KEY;
 
+// Debug logging (remove after fixing)
+if (typeof window === 'undefined') {  // Only log on server side
+  console.log('🔍 MicroCMS Environment Check:');
+  console.log('  SERVICE_DOMAIN:', process.env.MICROCMS_SERVICE_DOMAIN ? '✅ Set' : '❌ Missing');
+  console.log('  API_KEY:', process.env.MICROCMS_API_KEY ? '✅ Set' : '❌ Missing');
+  console.log('  Using Mock Data:', isMock ? 'YES' : 'NO');
+}
+
 export const client = isMock
   ? null
   : createClient({
