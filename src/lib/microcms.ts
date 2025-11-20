@@ -175,13 +175,19 @@ const mockNews: News[] = [
 
 export const getWorks = async (): Promise<Work[]> => {
   if (isMock || !client) {
+    console.log('⚠️ Using MOCK data for works');
     return mockWorks;
   }
   try {
+    console.log('🔄 Fetching works from microCMS...');
     const data = await client.getList<Work>({ endpoint: 'works' });
+    console.log('✅ Successfully fetched works:', data.contents.length, 'items');
     return data.contents;
-  } catch (error) {
-    console.error('Failed to fetch works:', error);
+  } catch (error: any) {
+    console.error('❌ Failed to fetch works:');
+    console.error('  Error type:', error.constructor.name);
+    console.error('  Error message:', error.message);
+    console.error('  Error details:', JSON.stringify(error, null, 2));
     return mockWorks;
   }
 };
