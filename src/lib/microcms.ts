@@ -60,14 +60,6 @@ export type News = {
 // Check if API key is present
 const isMock = !process.env.MICROCMS_SERVICE_DOMAIN || !process.env.MICROCMS_API_KEY;
 
-// Debug logging (remove after fixing)
-if (typeof window === 'undefined') {  // Only log on server side
-  console.log('🔍 MicroCMS Environment Check:');
-  console.log('  SERVICE_DOMAIN:', process.env.MICROCMS_SERVICE_DOMAIN ? '✅ Set' : '❌ Missing');
-  console.log('  API_KEY:', process.env.MICROCMS_API_KEY ? '✅ Set' : '❌ Missing');
-  console.log('  Using Mock Data:', isMock ? 'YES' : 'NO');
-}
-
 // Sanitize Service Domain (remove .microcms.io if present)
 const serviceDomain = process.env.MICROCMS_SERVICE_DOMAIN || '';
 const serviceDomainId = serviceDomain.replace('.microcms.io', '');
@@ -179,19 +171,13 @@ const mockNews: News[] = [
 
 export const getWorks = async (): Promise<Work[]> => {
   if (isMock || !client) {
-    console.log('⚠️ Using MOCK data for works');
     return mockWorks;
   }
   try {
-    console.log('🔄 Fetching works from microCMS...');
     const data = await client.getList<Work>({ endpoint: 'works' });
-    console.log('✅ Successfully fetched works:', data.contents.length, 'items');
     return data.contents;
-  } catch (error: any) {
-    console.error('❌ Failed to fetch works:');
-    console.error('  Error type:', error.constructor.name);
-    console.error('  Error message:', error.message);
-    console.error('  Error details:', JSON.stringify(error, null, 2));
+  } catch (error) {
+    console.error('Failed to fetch works:', error);
     return mockWorks;
   }
 };
