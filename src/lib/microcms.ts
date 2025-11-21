@@ -68,10 +68,14 @@ if (typeof window === 'undefined') {  // Only log on server side
   console.log('  Using Mock Data:', isMock ? 'YES' : 'NO');
 }
 
+// Sanitize Service Domain (remove .microcms.io if present)
+const serviceDomain = process.env.MICROCMS_SERVICE_DOMAIN || '';
+const serviceDomainId = serviceDomain.replace('.microcms.io', '');
+
 export const client = isMock
   ? null
   : createClient({
-      serviceDomain: process.env.MICROCMS_SERVICE_DOMAIN || '',
+      serviceDomain: serviceDomainId,
       apiKey: process.env.MICROCMS_API_KEY || '',
     });
 
