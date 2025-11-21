@@ -21,10 +21,10 @@ const container = {
 export default function WorkList({ works }: Props) {
   return (
     <motion.div
+      key={works.map(w => w.id).join(',')}
       variants={container}
       initial="hidden"
-      whileInView="show"
-      viewport={{ once: true }}
+      animate="show"
       className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8 md:gap-x-8 md:gap-y-16"
     >
       {works.map((work) => (
