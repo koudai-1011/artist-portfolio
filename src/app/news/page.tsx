@@ -8,7 +8,8 @@ type Props = {
 
 export default async function NewsPage({ searchParams }: Props) {
   const params = await searchParams;
-  const selectedCategory = params.category || 'all';
+  // Decode the category from URL parameter
+  const selectedCategory = params.category ? decodeURIComponent(params.category).trim() : 'all';
   
   const news = await getNews();
 

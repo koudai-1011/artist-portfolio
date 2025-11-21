@@ -8,7 +8,8 @@ type Props = {
 
 export default async function WorksPage({ searchParams }: Props) {
   const params = await searchParams;
-  const selectedCategory = params.category || 'all';
+  // Decode the category from URL parameter
+  const selectedCategory = params.category ? decodeURIComponent(params.category).trim() : 'all';
   
   const works = await getWorks();
 
