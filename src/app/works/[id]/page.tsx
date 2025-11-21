@@ -55,7 +55,7 @@ export default async function WorkDetailPage({ params }: Props) {
               </div>
               <div>
                 <dt className="text-gray-500 uppercase tracking-wider text-xs mb-1">Year</dt>
-                <dd>{new Date(work.publishedAt).getFullYear()}</dd>
+                <dd>{work.year || new Date(work.publishedAt).getFullYear()}</dd>
               </div>
             </dl>
           </div>

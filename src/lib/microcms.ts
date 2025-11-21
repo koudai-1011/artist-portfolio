@@ -14,6 +14,7 @@ export type Work = {
     width: number;
   }[];
   category: string[];
+  year?: number; // Optional field for artwork creation year
 };
 
 export type Profile = {
