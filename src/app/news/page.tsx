@@ -13,18 +13,31 @@ export default async function NewsPage({ searchParams }: Props) {
   
   const news = await getNews();
 
+  // Normalize categories (trim whitespace)
+  const normalizedNews = news.map(item => ({
+    ...item,
+    category: typeof item.category === 'string' ? item.category.trim() : item.category
+  }));
+
   // Extract all unique categories from news (excluding undefined)
   const allCategories = Array.from(
-    new Set(news.filter((item) => item.category).map((item) => item.category!))
+    new Set(normalizedNews.filter((item) => item.category).map((item) => item.category!))
   ).sort();
 
   // Filter news based on selected category
   const filteredNews = selectedCategory === 'all'
-    ? news
-    : news.filter((item) => item.category === selectedCategory);
+    ? normalizedNews
+    : normalizedNews.filter((item) => item.category === selectedCategory);
 
   return (
     <div className="container-custom py-32 bg-[#FFFEF0] min-h-screen">
+      {/* DEBUG INFO - REMOVE BEFORE PRODUCTION */}
+      <div className="fixed bottom-0 left-0 right-0 bg-black text-white p-4 text-xs z-50 opacity-80 overflow-auto max-h-40 hidden">
+        <p>Selected: {selectedCategory}</p>
+        <p>Categories: {JSON.stringify(allCategories)}</p>
+        <p>First News Category: {JSON.stringify(normalizedNews[0]?.category)}</p>
+      </div>
+
       <h1 className="text-6xl md:text-8xl font-black uppercase mb-16 bg-[#FF66CC] text-white px-8 py-4 border-8 border-black inline-block" style={{ boxShadow: '12px 12px 0 black' }}>News</h1>
 
       <CategoryFilter
