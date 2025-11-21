@@ -1,22 +1,24 @@
 'use client';
 
-import { useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 type Props = {
   categories: string[];
   selectedCategory: string;
-  onSelectCategory: (category: string) => void;
 };
 
-export default function CategoryFilter({ categories, selectedCategory, onSelectCategory }: Props) {
+export default function CategoryFilter({ categories, selectedCategory }: Props) {
+  const pathname = usePathname();
+
   if (categories.length === 0) {
     return null;
   }
 
   return (
     <div className="mb-12 flex flex-wrap gap-3">
-      <button
-        onClick={() => onSelectCategory('all')}
+      <Link
+        href={pathname}
         className={`px-6 py-2 font-bold uppercase text-sm border-4 border-black transition-all ${
           selectedCategory === 'all'
             ? 'bg-[#FF3366] text-white translate-y-0'
@@ -25,11 +27,11 @@ export default function CategoryFilter({ categories, selectedCategory, onSelectC
         style={{ boxShadow: selectedCategory === 'all' ? '0 0 0 black' : '4px 4px 0 black' }}
       >
         All
-      </button>
+      </Link>
       {categories.map((category) => (
-        <button
+        <Link
           key={category}
-          onClick={() => onSelectCategory(category)}
+          href={`${pathname}?category=${encodeURIComponent(category)}`}
           className={`px-6 py-2 font-bold uppercase text-sm border-4 border-black transition-all ${
             selectedCategory === category
               ? 'bg-[#FF3366] text-white translate-y-0'
@@ -38,7 +40,7 @@ export default function CategoryFilter({ categories, selectedCategory, onSelectC
           style={{ boxShadow: selectedCategory === category ? '0 0 0 black' : '4px 4px 0 black' }}
         >
           {category}
-        </button>
+        </Link>
       ))}
     </div>
   );

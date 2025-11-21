@@ -1,22 +1,16 @@
-'use client';
-
-import { useState, useEffect } from 'react';
 import Link from "next/link";
 import { getNews } from "@/lib/microcms";
 import CategoryFilter from "@/components/CategoryFilter";
-import type { News } from "@/lib/microcms";
 
-export default function NewsPage() {
-  const [news, setNews] = useState<News[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [isLoading, setIsLoading] = useState(true);
+type Props = {
+  searchParams: Promise<{ category?: string }>;
+};
 
-  useEffect(() => {
-    getNews().then((data) => {
-      setNews(data);
-      setIsLoading(false);
-    });
-  }, []);
+export default async function NewsPage({ searchParams }: Props) {
+  const params = await searchParams;
+  const selectedCategory = params.category || 'all';
+  
+  const news = await getNews();
 
   // Extract all unique categories from news (excluding undefined)
   const allCategories = Array.from(
@@ -28,14 +22,6 @@ export default function NewsPage() {
     ? news
     : news.filter((item) => item.category === selectedCategory);
 
-  if (isLoading) {
-    return (
-      <div className="container-custom py-32 bg-[#FFFEF0] min-h-screen">
-        <p className="text-center">Loading...</p>
-      </div>
-    );
-  }
-
   return (
     <div className="container-custom py-32 bg-[#FFFEF0] min-h-screen">
       <h1 className="text-6xl md:text-8xl font-black uppercase mb-16 bg-[#FF66CC] text-white px-8 py-4 border-8 border-black inline-block" style={{ boxShadow: '12px 12px 0 black' }}>News</h1>
@@ -43,7 +29,6 @@ export default function NewsPage() {
       <CategoryFilter
         categories={allCategories}
         selectedCategory={selectedCategory}
-        onSelectCategory={setSelectedCategory}
       />
 
       <div className="max-w-3xl space-y-8">
