@@ -41,7 +41,7 @@ export default async function RootLayout({
         <main className="flex-grow">
           <PageTransition>{children}</PageTransition>
         </main>
-        <Footer />
+        <Footer config={config} />
       </body>
     </html>
   );

@@ -39,6 +39,8 @@ export type Config = {
     height: number;
     width: number;
   };
+  copyright?: string;
+  snsLink?: string;
 };
 
 export type News = {
