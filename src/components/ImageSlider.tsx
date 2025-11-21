@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaChevronLeft, FaChevronRight, FaExpand } from 'react-icons/fa';
@@ -15,11 +15,13 @@ type ImageData = {
 type Props = {
   images: ImageData[];
   alt: string;
+  autoSlideInterval?: number; // in milliseconds, default 5000 (5 seconds)
 };
 
-export default function ImageSlider({ images, alt }: Props) {
+export default function ImageSlider({ images, alt, autoSlideInterval = 5000 }: Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
 
   const goToNext = () => {
     setCurrentIndex((prev) => (prev + 1) % images.length);
@@ -31,11 +33,24 @@ export default function ImageSlider({ images, alt }: Props) {
 
   const openLightbox = () => {
     setIsLightboxOpen(true);
+    setIsPaused(true); // Pause auto-slide when lightbox opens
   };
 
   const closeLightbox = () => {
     setIsLightboxOpen(false);
+    setIsPaused(false); // Resume auto-slide when lightbox closes
   };
+
+  // Auto-slide effect (only for multiple images)
+  useEffect(() => {
+    if (images.length <= 1 || isPaused) return;
+
+    const interval = setInterval(() => {
+      goToNext();
+    }, autoSlideInterval);
+
+    return () => clearInterval(interval);
+  }, [images.length, isPaused, autoSlideInterval, currentIndex]);
 
   if (!images || images.length === 0) {
     return null;
@@ -80,7 +95,11 @@ export default function ImageSlider({ images, alt }: Props) {
 
   return (
     <>
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100 dark:bg-gray-900 group">
+      <div
+        className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100 dark:bg-gray-900 group"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
         <AnimatePresence mode="wait">
           <motion.div
             key={currentIndex}
@@ -114,6 +133,7 @@ export default function ImageSlider({ images, alt }: Props) {
               onClick={(e) => {
                 e.stopPropagation();
                 goToPrevious();
+                setIsPaused(true); // Pause when user manually navigates
               }}
               className="absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-white/90 dark:bg-black/90 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 active:scale-95 z-10"
               aria-label="Previous image"
@@ -125,6 +145,7 @@ export default function ImageSlider({ images, alt }: Props) {
               onClick={(e) => {
                 e.stopPropagation();
                 goToNext();
+                setIsPaused(true); // Pause when user manually navigates
               }}
               className="absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-white/90 dark:bg-black/90 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 active:scale-95 z-10"
               aria-label="Next image"
@@ -145,6 +166,7 @@ export default function ImageSlider({ images, alt }: Props) {
                   onClick={(e) => {
                     e.stopPropagation();
                     setCurrentIndex(index);
+                    setIsPaused(true); // Pause when user manually selects
                   }}
                   className={`w-2 h-2 rounded-full transition-all ${
                     index === currentIndex
