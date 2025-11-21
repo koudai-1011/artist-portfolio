@@ -2,6 +2,8 @@ import Link from "next/link";
 import { getNews } from "@/lib/microcms";
 import CategoryFilter from "@/components/CategoryFilter";
 
+export const dynamic = 'force-dynamic';
+
 type Props = {
   searchParams: Promise<{ category?: string }>;
 };

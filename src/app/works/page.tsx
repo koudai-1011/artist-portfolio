@@ -2,6 +2,8 @@ import WorkList from "@/components/WorkList";
 import CategoryFilter from "@/components/CategoryFilter";
 import { getWorks } from "@/lib/microcms";
 
+export const dynamic = 'force-dynamic';
+
 type Props = {
   searchParams: Promise<{ category?: string }>;
 };
