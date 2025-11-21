@@ -1,16 +1,53 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from "next/link";
 import { getNews } from "@/lib/microcms";
-import { motion } from "framer-motion";
+import CategoryFilter from "@/components/CategoryFilter";
+import type { News } from "@/lib/microcms";
 
-export default async function NewsPage() {
-  const news = await getNews();
+export default function NewsPage() {
+  const [news, setNews] = useState<News[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    getNews().then((data) => {
+      setNews(data);
+      setIsLoading(false);
+    });
+  }, []);
+
+  // Extract all unique categories from news (excluding undefined)
+  const allCategories = Array.from(
+    new Set(news.filter((item) => item.category).map((item) => item.category!))
+  ).sort();
+
+  // Filter news based on selected category
+  const filteredNews = selectedCategory === 'all'
+    ? news
+    : news.filter((item) => item.category === selectedCategory);
+
+  if (isLoading) {
+    return (
+      <div className="container-custom py-32 bg-[#FFFEF0] min-h-screen">
+        <p className="text-center">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container-custom py-32 bg-[#FFFEF0] min-h-screen">
       <h1 className="text-6xl md:text-8xl font-black uppercase mb-16 bg-[#FF66CC] text-white px-8 py-4 border-8 border-black inline-block" style={{ boxShadow: '12px 12px 0 black' }}>News</h1>
 
+      <CategoryFilter
+        categories={allCategories}
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
+      />
+
       <div className="max-w-3xl space-y-8">
-        {news.map((item) => (
+        {filteredNews.map((item) => (
           <Link
             key={item.id}
             href={`/news/${item.id}`}
@@ -44,9 +81,11 @@ export default async function NewsPage() {
           </Link>
         ))}
 
-        {news.length === 0 && (
+        {filteredNews.length === 0 && (
           <div className="text-center py-12 bg-white p-8 border-4 border-black" style={{ boxShadow: '8px 8px 0 black' }}>
-            <p className="font-bold uppercase">お知らせはまだありません。</p>
+            <p className="font-bold uppercase">
+              {selectedCategory === 'all' ? 'お知らせはまだありません。' : 'このカテゴリのお知らせはありません。'}
+            </p>
           </div>
         )}
       </div>
