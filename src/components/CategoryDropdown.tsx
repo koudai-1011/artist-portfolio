@@ -59,14 +59,14 @@ export default function CategoryDropdown({ categories, selectedCategory }: Props
 
             {isOpen && (
                 <div
-                    className="absolute top-full mt-2 left-0 bg-white border-4 border-black z-50 min-w-max"
+                    className="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-white border-4 border-black z-50 min-w-max"
                     style={{ boxShadow: '4px 4px 0 black' }}
                 >
                     <button
                         onClick={() => handleSelect('all')}
                         className={`block w-full text-left px-6 py-3 font-bold uppercase text-sm border-b-2 border-black transition-colors ${selectedCategory === 'all'
-                                ? 'bg-[#FF66CC] text-white'
-                                : 'bg-white text-black hover:bg-[#FF66CC] hover:text-white'
+                            ? 'bg-[#FF66CC] text-white'
+                            : 'bg-white text-black hover:bg-[#FF66CC] hover:text-white'
                             }`}
                     >
                         All Categories
@@ -76,8 +76,8 @@ export default function CategoryDropdown({ categories, selectedCategory }: Props
                             key={category}
                             onClick={() => handleSelect(category)}
                             className={`block w-full text-left px-6 py-3 font-bold uppercase text-sm border-b-2 border-black last:border-b-0 transition-colors ${selectedCategory === category
-                                    ? 'bg-[#FF66CC] text-white'
-                                    : 'bg-white text-black hover:bg-[#FF66CC] hover:text-white'
+                                ? 'bg-[#FF66CC] text-white'
+                                : 'bg-white text-black hover:bg-[#FF66CC] hover:text-white'
                                 }`}
                         >
                             {category}
