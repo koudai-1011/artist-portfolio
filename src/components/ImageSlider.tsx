@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaChevronLeft, FaChevronRight, FaExpand } from 'react-icons/fa';
@@ -22,6 +22,8 @@ export default function ImageSlider({ images, alt, autoSlideInterval = 5000 }: P
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
 
   const goToNext = () => {
     setCurrentIndex((prev) => (prev + 1) % images.length);
@@ -29,6 +31,30 @@ export default function ImageSlider({ images, alt, autoSlideInterval = 5000 }: P
 
   const goToPrevious = () => {
     setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.changedTouches[0].screenX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    touchEndX.current = e.changedTouches[0].screenX;
+    handleSwipe();
+  };
+
+  const handleSwipe = () => {
+    const distance = touchStartX.current - touchEndX.current;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      goToNext();
+      setIsPaused(true);
+    }
+    if (isRightSwipe) {
+      goToPrevious();
+      setIsPaused(true);
+    }
   };
 
   const openLightbox = () => {
@@ -84,8 +110,8 @@ export default function ImageSlider({ images, alt, autoSlideInterval = 5000 }: P
             images={images}
             currentIndex={0}
             onClose={closeLightbox}
-            onNext={() => {}}
-            onPrevious={() => {}}
+            onNext={() => { }}
+            onPrevious={() => { }}
             alt={alt}
           />
         )}
@@ -96,9 +122,11 @@ export default function ImageSlider({ images, alt, autoSlideInterval = 5000 }: P
   return (
     <>
       <div
-        className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100 dark:bg-gray-900 group"
+        className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100 dark:bg-gray-900 group cursor-grab active:cursor-grabbing"
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
         <AnimatePresence mode="wait">
           <motion.div
@@ -168,11 +196,10 @@ export default function ImageSlider({ images, alt, autoSlideInterval = 5000 }: P
                     setCurrentIndex(index);
                     setIsPaused(true); // Pause when user manually selects
                   }}
-                  className={`w-2 h-2 rounded-full transition-all ${
-                    index === currentIndex
+                  className={`w-2 h-2 rounded-full transition-all ${index === currentIndex
                       ? 'bg-white w-6'
                       : 'bg-white/50 hover:bg-white/75'
-                  }`}
+                    }`}
                   aria-label={`Go to image ${index + 1}`}
                 />
               ))}
