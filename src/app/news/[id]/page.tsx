@@ -53,7 +53,7 @@ export default async function NewsDetailPage({ params }: Props) {
 
         {/* Rich Editor Content */}
         <div
-          className="prose prose-lg dark:prose-invert max-w-none prose-img:rounded-lg prose-a:text-blue-600 dark:prose-a:text-blue-400"
+          className="prose prose-lg dark:prose-invert max-w-none prose-img:rounded-lg prose-a:text-blue-600 dark:prose-a:text-blue-400 [&>p]:whitespace-pre-wrap [&>p]:break-words"
           dangerouslySetInnerHTML={{ __html: newsItem.content || '' }}
         />
       </div>
