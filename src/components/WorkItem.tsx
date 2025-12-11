@@ -34,20 +34,27 @@ export default function WorkItem({ work }: Props) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
       </motion.div>
-      
+
       <div className="flex flex-col gap-2">
-        <h3 
+        <h3
           className="text-xl font-black uppercase px-3 py-2 border-4 border-black inline-block"
-          style={{ 
+          style={{
             backgroundColor: randomColor,
             boxShadow: '4px 4px 0 black'
           }}
         >
           {work.title}
         </h3>
-        <span className="text-xs font-bold uppercase tracking-wider px-2 py-1 bg-white border-2 border-black inline-block w-fit">
-          {work.category[0]}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold uppercase tracking-wider px-2 py-1 bg-white border-2 border-black inline-block w-fit">
+            {work.category[0]}
+          </span>
+          {work.displayYear && (
+            <span className="text-xs font-bold uppercase tracking-wider px-2 py-1 bg-gray-100 border-2 border-black inline-block w-fit">
+              {work.displayYear}
+            </span>
+          )}
+        </div>
       </div>
     </Link>
   );

@@ -42,7 +42,7 @@ export default async function WorkDetailPage({ params }: Props) {
           <h1 className="text-4xl md:text-5xl font-serif font-bold mb-6">
             {work.title}
           </h1>
-          
+
           <div className="space-y-6 text-gray-600 dark:text-gray-300 leading-relaxed">
             <p>{work.description}</p>
           </div>
@@ -55,7 +55,7 @@ export default async function WorkDetailPage({ params }: Props) {
               </div>
               <div>
                 <dt className="text-gray-500 uppercase tracking-wider text-xs mb-1">Year</dt>
-                <dd>{work.year || new Date(work.publishedAt).getFullYear()}</dd>
+                <dd>{work.displayYear || work.year || new Date(work.publishedAt).getFullYear()}</dd>
               </div>
             </dl>
           </div>

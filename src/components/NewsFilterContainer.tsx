@@ -1,6 +1,6 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { News } from '@/lib/microcms';
 import Link from 'next/link';
 import CategoryFilter from './CategoryFilter';
@@ -11,11 +11,15 @@ type Props = {
   dateFormat: string;
 };
 
+type SortType = 'newest' | 'oldest' | 'title-asc' | 'title-desc';
+
 export default function NewsFilterContainer({ initialNews, dateFormat }: Props) {
   const searchParams = useSearchParams();
+  const router = useRouter();
 
-  // Get category from URL or default to 'all'
+  // Get category and sort from URL
   const currentCategory = searchParams.get('category') || 'all';
+  const currentSort = (searchParams.get('sort') || 'newest') as SortType;
 
   // Normalize news data
   const normalizedNews = initialNews.map(item => ({
@@ -29,11 +33,26 @@ export default function NewsFilterContainer({ initialNews, dateFormat }: Props) 
   ).sort().filter(c => c !== 'undefined' && c !== '');
 
   // Filter news
-  const filteredNews = currentCategory === 'all'
+  let filteredNews = currentCategory === 'all'
     ? normalizedNews
     : normalizedNews.filter((item) =>
       item.category && item.category.toLowerCase() === currentCategory.toLowerCase()
     );
+
+  // Sort news
+  filteredNews = [...filteredNews].sort((a, b) => {
+    switch (currentSort) {
+      case 'oldest':
+        return new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime();
+      case 'title-asc':
+        return a.title.localeCompare(b.title, 'ja');
+      case 'title-desc':
+        return b.title.localeCompare(a.title, 'ja');
+      case 'newest':
+      default:
+        return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
+    }
+  });
 
   // Debug info state
   const [showDebug, setShowDebug] = useState(false);
@@ -60,6 +79,13 @@ export default function NewsFilterContainer({ initialNews, dateFormat }: Props) 
       .replace('dd', day);
   };
 
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newSort = e.target.value;
+    const params = new URLSearchParams(searchParams);
+    params.set('sort', newSort);
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
+
   return (
     <>
       {/* Debug Toggle */}
@@ -75,6 +101,27 @@ export default function NewsFilterContainer({ initialNews, dateFormat }: Props) 
         categories={allCategories}
         selectedCategory={currentCategory}
       />
+
+      {/* Sort Bar */}
+      <div className="mb-8 flex flex-col md:flex-row gap-4 items-start md:items-center">
+        <div className="flex items-center gap-2">
+          <label htmlFor="news-sort" className="text-sm font-bold uppercase">
+            並び替え：
+          </label>
+          <select
+            id="news-sort"
+            value={currentSort}
+            onChange={handleSortChange}
+            className="px-4 py-2 border-2 border-black font-bold uppercase bg-white text-black hover:bg-gray-100 transition-colors"
+            style={{ boxShadow: '2px 2px 0 black' }}
+          >
+            <option value="newest">新しい順</option>
+            <option value="oldest">古い順</option>
+            <option value="title-asc">タイトル (A-Z)</option>
+            <option value="title-desc">タイトル (Z-A)</option>
+          </select>
+        </div>
+      </div>
 
       <div className="max-w-3xl space-y-8">
         {filteredNews.map((item) => (
@@ -114,7 +161,7 @@ export default function NewsFilterContainer({ initialNews, dateFormat }: Props) 
             </p>
           </div>
         )}
-      </div>
+      </div >
     </>
   );
 }
