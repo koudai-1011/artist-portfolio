@@ -46,24 +46,31 @@ export default function WorkFilterContainer({ initialWorks }: Props) {
 
   // Sort works
   filteredWorks = [...filteredWorks].sort((a, b) => {
+    // Helper function to parse displayDate (YYYY/MM/DD format) to Date
+    const parseDateString = (dateStr: string | undefined): Date => {
+      if (!dateStr) return new Date(0);
+      const [year, month, day] = dateStr.split('/').map(Number);
+      return new Date(year, month - 1, day);
+    };
+
     switch (currentSort) {
       case 'oldest':
-        return new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime();
+        return parseDateString(a.displayDate).getTime() - parseDateString(b.displayDate).getTime();
       case 'year-asc':
-        const yearA = parseInt(a.displayYear || String(a.year || 0));
-        const yearB = parseInt(b.displayYear || String(b.year || 0));
-        return yearA - yearB;
+        const dateA = parseDateString(a.displayDate);
+        const dateB = parseDateString(b.displayDate);
+        return dateA.getFullYear() - dateB.getFullYear();
       case 'year-desc':
-        const yearA2 = parseInt(a.displayYear || String(a.year || 0));
-        const yearB2 = parseInt(b.displayYear || String(b.year || 0));
-        return yearB2 - yearA2;
+        const dateA2 = parseDateString(a.displayDate);
+        const dateB2 = parseDateString(b.displayDate);
+        return dateB2.getFullYear() - dateA2.getFullYear();
       case 'title-asc':
         return a.title.localeCompare(b.title, 'ja');
       case 'title-desc':
         return b.title.localeCompare(a.title, 'ja');
       case 'newest':
       default:
-        return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
+        return parseDateString(b.displayDate).getTime() - parseDateString(a.displayDate).getTime();
     }
   });
 

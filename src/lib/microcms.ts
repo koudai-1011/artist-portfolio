@@ -15,7 +15,7 @@ export type Work = {
   }[];
   category: string[];
   year?: number; // Optional field for artwork creation year
-  displayYear?: string; // Custom display year (e.g., "2020")
+  displayDate?: string; // Custom display date (YYYY/MM/DD format)
 };
 
 export type Profile = {
@@ -99,7 +99,7 @@ const mockWorks: Work[] = [
       },
     ],
     category: ['Painting', 'Abstract'],
-    displayYear: '2020',
+    displayDate: '2020/2/20',
   },
   {
     id: '2',
@@ -117,7 +117,7 @@ const mockWorks: Work[] = [
       },
     ],
     category: ['Photography'],
-    displayYear: '2021',
+    displayDate: '2021/5/15',
   },
   {
     id: '3',
@@ -135,7 +135,7 @@ const mockWorks: Work[] = [
       },
     ],
     category: ['Digital', '3D'],
-    displayYear: '2023',
+    displayDate: '2023/8/10',
   },
 ];
 

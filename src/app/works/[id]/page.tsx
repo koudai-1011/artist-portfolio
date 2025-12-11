@@ -54,8 +54,8 @@ export default async function WorkDetailPage({ params }: Props) {
                 <dd>{work.category.join(", ")}</dd>
               </div>
               <div>
-                <dt className="text-gray-500 uppercase tracking-wider text-xs mb-1">Year</dt>
-                <dd>{work.displayYear || work.year || new Date(work.publishedAt).getFullYear()}</dd>
+                <dt className="text-gray-500 uppercase tracking-wider text-xs mb-1">Date</dt>
+                <dd>{work.displayDate || new Date(work.publishedAt).toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })}</dd>
               </div>
             </dl>
           </div>

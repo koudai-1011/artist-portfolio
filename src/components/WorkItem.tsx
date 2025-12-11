@@ -19,6 +19,9 @@ const colors = ['#FF3366', '#3366FF', '#FFCC00', '#00FF99', '#FF66CC'];
 export default function WorkItem({ work }: Props) {
   const randomColor = colors[Math.floor(Math.random() * colors.length)];
 
+  // Extract year from displayDate (YYYY/MM/DD format)
+  const displayYear = work.displayDate ? work.displayDate.split('/')[0] : null;
+
   return (
     <Link href={`/works/${work.id}`} className="block group">
       <motion.div
@@ -49,9 +52,9 @@ export default function WorkItem({ work }: Props) {
           <span className="text-xs font-bold uppercase tracking-wider px-2 py-1 bg-white border-2 border-black inline-block w-fit">
             {work.category[0]}
           </span>
-          {work.displayYear && (
+          {displayYear && (
             <span className="text-xs font-bold uppercase tracking-wider px-2 py-1 bg-gray-100 border-2 border-black inline-block w-fit">
-              {work.displayYear}
+              {displayYear}
             </span>
           )}
         </div>
