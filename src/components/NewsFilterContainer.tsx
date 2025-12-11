@@ -135,14 +135,9 @@ export default function NewsFilterContainer({ initialNews, dateFormat }: Props) 
                 )}
               </div>
 
-              <h2 className="text-2xl font-black uppercase mb-3 group-hover:text-[#FF3366]">
+              <h2 className="text-2xl font-black uppercase group-hover:text-[#FF3366]">
                 {item.title}
               </h2>
-
-              <div
-                className="text-gray-700 line-clamp-2"
-                dangerouslySetInnerHTML={{ __html: item.content || '' }}
-              />
             </div>
           </Link>
         ))}
