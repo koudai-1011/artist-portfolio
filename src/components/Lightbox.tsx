@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaTimes, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
@@ -22,6 +22,7 @@ type Props = {
 
 export default function Lightbox({ images, currentIndex, onClose, onNext, onPrevious, alt }: Props) {
   const imageRef = useRef<HTMLDivElement>(null);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
 
   // Close on Escape key
   useEffect(() => {
@@ -40,6 +41,31 @@ export default function Lightbox({ images, currentIndex, onClose, onNext, onPrev
     };
   }, []);
 
+  // Handle swipe
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX === null) return;
+
+    const touchEndX = e.changedTouches[0].clientX;
+    const diff = touchStartX - touchEndX;
+    const minDistance = 50;
+
+    if (Math.abs(diff) > minDistance && images.length > 1) {
+      if (diff > 0) {
+        // Swiped left - show next image
+        onNext();
+      } else {
+        // Swiped right - show previous image
+        onPrevious();
+      }
+    }
+
+    setTouchStartX(null);
+  };
+
   // Handle click - close if clicking outside the image
   const handleBackgroundClick = (e: React.MouseEvent) => {
     // Close if clicking directly on the background
@@ -56,6 +82,8 @@ export default function Lightbox({ images, currentIndex, onClose, onNext, onPrev
         exit={{ opacity: 0 }}
         className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center"
         onClick={handleBackgroundClick}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
         {/* Close Button */}
         <button
@@ -77,7 +105,6 @@ export default function Lightbox({ images, currentIndex, onClose, onNext, onPrev
         <div
           ref={imageRef}
           className="relative w-full h-full max-w-7xl max-h-[90vh] mx-auto px-4 sm:px-16 flex items-center justify-center"
-          onClick={handleBackgroundClick}
         >
           <AnimatePresence mode="wait">
             <motion.div
@@ -100,26 +127,6 @@ export default function Lightbox({ images, currentIndex, onClose, onNext, onPrev
             </motion.div>
           </AnimatePresence>
         </div>
-
-        {/* Left Edge Tap Zone - Close on tap */}
-        <div
-          className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 cursor-pointer z-10"
-          onClick={(e) => {
-            e.stopPropagation();
-            onClose();
-          }}
-          aria-label="Close lightbox"
-        />
-
-        {/* Right Edge Tap Zone - Close on tap */}
-        <div
-          className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 cursor-pointer z-10"
-          onClick={(e) => {
-            e.stopPropagation();
-            onClose();
-          }}
-          aria-label="Close lightbox"
-        />
 
         {/* Navigation Buttons */}
         {images.length > 1 && (
@@ -164,11 +171,10 @@ export default function Lightbox({ images, currentIndex, onClose, onNext, onPrev
                     for (let i = 0; i < Math.abs(diff); i++) onPrevious();
                   }
                 }}
-                className={`relative w-16 h-16 flex-shrink-0 rounded overflow-hidden transition-all ${
-                  index === currentIndex
+                className={`relative w-16 h-16 flex-shrink-0 rounded overflow-hidden transition-all ${index === currentIndex
                     ? 'ring-2 ring-white scale-110'
                     : 'opacity-50 hover:opacity-100'
-                }`}
+                  }`}
               >
                 <Image
                   src={image.url}

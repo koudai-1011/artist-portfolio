@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getNewsItem, getNews } from "@/lib/microcms";
 import { FaArrowLeft } from "react-icons/fa";
+import NewsDetailClient from "@/components/NewsDetailClient";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -51,11 +52,7 @@ export default async function NewsDetailPage({ params }: Props) {
           {newsItem.title}
         </h1>
 
-        {/* Rich Editor Content */}
-        <div
-          className="prose prose-lg dark:prose-invert max-w-none prose-img:rounded-lg prose-a:text-blue-600 dark:prose-a:text-blue-400 [&>p]:whitespace-pre-wrap [&>p]:break-words"
-          dangerouslySetInnerHTML={{ __html: newsItem.content || '' }}
-        />
+        <NewsDetailClient content={newsItem.content || ''} title={newsItem.title} />
       </div>
     </article>
   );
