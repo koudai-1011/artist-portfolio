@@ -4,6 +4,7 @@ import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Work } from '@/lib/microcms';
 import WorkList from './WorkList';
 import CategoryFilter from './CategoryFilter';
+import SortDropdown from './SortDropdown';
 import { useEffect, useState } from 'react';
 
 type Props = {
@@ -77,8 +78,7 @@ export default function WorkFilterContainer({ initialWorks }: Props) {
   // Debug info state
   const [showDebug, setShowDebug] = useState(false);
 
-  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newSort = e.target.value;
+  const handleSortChange = (newSort: string) => {
     const params = new URLSearchParams(searchParams);
     params.set('sort', newSort);
     router.push(`?${params.toString()}`, { scroll: false });
@@ -101,26 +101,19 @@ export default function WorkFilterContainer({ initialWorks }: Props) {
       />
 
       {/* Sort Bar */}
-      <div className="mb-8 flex flex-col md:flex-row gap-4 items-start md:items-center">
-        <div className="flex items-center gap-2">
-          <label htmlFor="works-sort" className="text-sm font-bold uppercase">
-            並び替え：
-          </label>
-          <select
-            id="works-sort"
-            value={currentSort}
-            onChange={handleSortChange}
-            className="px-4 py-2 border-2 border-black font-bold uppercase bg-white text-black hover:bg-gray-100 transition-colors"
-            style={{ boxShadow: '2px 2px 0 black' }}
-          >
-            <option value="newest">新しい順</option>
-            <option value="oldest">古い順</option>
-            <option value="year-asc">年度 (小→大)</option>
-            <option value="year-desc">年度 (大→小)</option>
-            <option value="title-asc">タイトル (A-Z)</option>
-            <option value="title-desc">タイトル (Z-A)</option>
-          </select>
-        </div>
+      <div className="mb-8">
+        <SortDropdown
+          options={[
+            { label: '新しい順', value: 'newest' },
+            { label: '古い順', value: 'oldest' },
+            { label: '年度 (小→大)', value: 'year-asc' },
+            { label: '年度 (大→小)', value: 'year-desc' },
+            { label: 'タイトル (A-Z)', value: 'title-asc' },
+            { label: 'タイトル (Z-A)', value: 'title-desc' },
+          ]}
+          value={currentSort}
+          onChange={handleSortChange}
+        />
       </div>
 
       <WorkList works={filteredWorks} />

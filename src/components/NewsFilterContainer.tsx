@@ -4,6 +4,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { News } from '@/lib/microcms';
 import Link from 'next/link';
 import CategoryFilter from './CategoryFilter';
+import SortDropdown from './SortDropdown';
 import { useState } from 'react';
 
 type Props = {
@@ -79,8 +80,7 @@ export default function NewsFilterContainer({ initialNews, dateFormat }: Props) 
       .replace('dd', day);
   };
 
-  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newSort = e.target.value;
+  const handleSortChange = (newSort: string) => {
     const params = new URLSearchParams(searchParams);
     params.set('sort', newSort);
     router.push(`?${params.toString()}`, { scroll: false });
@@ -103,24 +103,17 @@ export default function NewsFilterContainer({ initialNews, dateFormat }: Props) 
       />
 
       {/* Sort Bar */}
-      <div className="mb-8 flex flex-col md:flex-row gap-4 items-start md:items-center">
-        <div className="flex items-center gap-2">
-          <label htmlFor="news-sort" className="text-sm font-bold uppercase">
-            並び替え：
-          </label>
-          <select
-            id="news-sort"
-            value={currentSort}
-            onChange={handleSortChange}
-            className="px-4 py-2 border-2 border-black font-bold uppercase bg-white text-black hover:bg-gray-100 transition-colors"
-            style={{ boxShadow: '2px 2px 0 black' }}
-          >
-            <option value="newest">新しい順</option>
-            <option value="oldest">古い順</option>
-            <option value="title-asc">タイトル (A-Z)</option>
-            <option value="title-desc">タイトル (Z-A)</option>
-          </select>
-        </div>
+      <div className="mb-8">
+        <SortDropdown
+          options={[
+            { label: '新しい順', value: 'newest' },
+            { label: '古い順', value: 'oldest' },
+            { label: 'タイトル (A-Z)', value: 'title-asc' },
+            { label: 'タイトル (Z-A)', value: 'title-desc' },
+          ]}
+          value={currentSort}
+          onChange={handleSortChange}
+        />
       </div>
 
       <div className="max-w-3xl space-y-8">
