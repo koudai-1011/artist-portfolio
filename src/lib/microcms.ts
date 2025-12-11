@@ -53,6 +53,7 @@ export type News = {
   title: string;
   content: string; // Rich editor content (HTML)
   category?: string;
+  displayDate?: string; // Custom display date (YYYY/MM/DD format)
   thumbnail?: {
     url: string;
     height: number;
@@ -75,9 +76,9 @@ const serviceDomainId = serviceDomain.replace('.microcms.io', '');
 export const client = isMock
   ? null
   : createClient({
-      serviceDomain: serviceDomainId,
-      apiKey: process.env.MICROCMS_API_KEY || '',
-    });
+    serviceDomain: serviceDomainId,
+    apiKey: process.env.MICROCMS_API_KEY || '',
+  });
 
 // Mock Data
 const mockWorks: Work[] = [
@@ -168,6 +169,7 @@ const mockNews: News[] = [
     title: '新作展示会のお知らせ',
     content: '<p>2024年2月1日より、渋谷ギャラリーにて新作展示会を開催いたします。</p><p><strong>会期:</strong> 2月1日〜2月28日<br><strong>場所:</strong> 渋谷ギャラリーX</p><p>皆様のご来場をお待ちしております。</p>',
     category: 'Exhibition',
+    displayDate: '2024/02/01',
   },
   {
     id: '2',
@@ -178,6 +180,7 @@ const mockNews: News[] = [
     title: 'ウェブサイトをリニューアルしました',
     content: '<p>ポートフォリオサイトを全面リニューアルいたしました。</p><p>新しいデザインで、作品をより魅力的にご覧いただけます。</p>',
     category: 'Update',
+    displayDate: '2023/12/20',
   },
 ];
 

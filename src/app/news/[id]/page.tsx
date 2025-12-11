@@ -34,7 +34,7 @@ export default async function NewsDetailPage({ params }: Props) {
       <div className="max-w-3xl">
         <div className="flex items-center gap-4 mb-6 text-sm text-gray-500">
           <time dateTime={newsItem.publishedAt}>
-            {new Date(newsItem.publishedAt).toLocaleDateString('ja-JP', {
+            {newsItem.displayDate || new Date(newsItem.publishedAt).toLocaleDateString('ja-JP', {
               year: 'numeric',
               month: 'long',
               day: 'numeric',
@@ -52,7 +52,7 @@ export default async function NewsDetailPage({ params }: Props) {
         </h1>
 
         {/* Rich Editor Content */}
-        <div 
+        <div
           className="prose prose-lg dark:prose-invert max-w-none prose-img:rounded-lg prose-a:text-blue-600 dark:prose-a:text-blue-400"
           dangerouslySetInnerHTML={{ __html: newsItem.content || '' }}
         />

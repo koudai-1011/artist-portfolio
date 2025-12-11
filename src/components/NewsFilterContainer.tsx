@@ -13,10 +13,10 @@ type Props = {
 
 export default function NewsFilterContainer({ initialNews, dateFormat }: Props) {
   const searchParams = useSearchParams();
-  
+
   // Get category from URL or default to 'all'
   const currentCategory = searchParams.get('category') || 'all';
-  
+
   // Normalize news data
   const normalizedNews = initialNews.map(item => ({
     ...item,
@@ -31,20 +31,29 @@ export default function NewsFilterContainer({ initialNews, dateFormat }: Props) 
   // Filter news
   const filteredNews = currentCategory === 'all'
     ? normalizedNews
-    : normalizedNews.filter((item) => 
-        item.category && item.category.toLowerCase() === currentCategory.toLowerCase()
-      );
+    : normalizedNews.filter((item) =>
+      item.category && item.category.toLowerCase() === currentCategory.toLowerCase()
+    );
 
   // Debug info state
   const [showDebug, setShowDebug] = useState(false);
 
   // Date formatter helper
-  const formatDate = (dateString: string) => {
+  const formatDate = (item: News) => {
+    // Use displayDate if available, otherwise fall back to publishedAt
+    const dateString = item.displayDate || item.publishedAt;
+
+    // If displayDate is in YYYY/MM/DD format, return as-is
+    if (item.displayDate && /^\d{4}\/\d{2}\/\d{2}$/.test(item.displayDate)) {
+      return item.displayDate;
+    }
+
+    // Otherwise format publishedAt
     const date = new Date(dateString);
     const year = date.getFullYear().toString();
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const day = date.getDate().toString().padStart(2, '0');
-    
+
     return dateFormat
       .replace('yyyy', year)
       .replace('MM', month)
@@ -77,7 +86,7 @@ export default function NewsFilterContainer({ initialNews, dateFormat }: Props) 
             <div className="bg-white p-6 border-6 border-black hover:translate-y-1 transition-transform" style={{ boxShadow: '8px 8px 0 black' }}>
               <div className="flex items-center gap-4 mb-3">
                 <time className="text-sm font-bold bg-[#FFCC00] px-3 py-1 border-2 border-black">
-                  {formatDate(item.publishedAt)}
+                  {formatDate(item)}
                 </time>
                 {item.category && (
                   <span className="px-3 py-1 bg-[#3366FF] text-white text-xs font-bold uppercase border-2 border-black">
@@ -90,7 +99,7 @@ export default function NewsFilterContainer({ initialNews, dateFormat }: Props) 
                 {item.title}
               </h2>
 
-              <div 
+              <div
                 className="text-gray-700 line-clamp-2"
                 dangerouslySetInnerHTML={{ __html: item.content || '' }}
               />
