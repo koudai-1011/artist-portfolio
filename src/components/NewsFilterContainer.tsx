@@ -8,9 +8,10 @@ import { useState } from 'react';
 
 type Props = {
   initialNews: News[];
+  dateFormat: string;
 };
 
-export default function NewsFilterContainer({ initialNews }: Props) {
+export default function NewsFilterContainer({ initialNews, dateFormat }: Props) {
   const searchParams = useSearchParams();
   
   // Get category from URL or default to 'all'
@@ -36,6 +37,19 @@ export default function NewsFilterContainer({ initialNews }: Props) {
 
   // Debug info state
   const [showDebug, setShowDebug] = useState(false);
+
+  // Date formatter helper
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear().toString();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    
+    return dateFormat
+      .replace('yyyy', year)
+      .replace('MM', month)
+      .replace('dd', day);
+  };
 
   return (
     <>
@@ -63,11 +77,7 @@ export default function NewsFilterContainer({ initialNews }: Props) {
             <div className="bg-white p-6 border-6 border-black hover:translate-y-1 transition-transform" style={{ boxShadow: '8px 8px 0 black' }}>
               <div className="flex items-center gap-4 mb-3">
                 <time className="text-sm font-bold bg-[#FFCC00] px-3 py-1 border-2 border-black">
-                  {new Date(item.publishedAt).toLocaleDateString('ja-JP', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                  })}
+                  {formatDate(item.publishedAt)}
                 </time>
                 {item.category && (
                   <span className="px-3 py-1 bg-[#3366FF] text-white text-xs font-bold uppercase border-2 border-black">

@@ -60,6 +60,11 @@ export type News = {
   };
 };
 
+export type DateConfig = {
+  format?: string;
+  date?: string; // Fallback if user named the field 'date'
+};
+
 // Check if API key is present
 const isMock = !process.env.MICROCMS_SERVICE_DOMAIN || !process.env.MICROCMS_API_KEY;
 
@@ -149,6 +154,10 @@ const mockConfig: Config = {
   heroSubtitle: 'Digital & Analog / Tokyo Based',
 };
 
+const mockDateConfig: DateConfig = {
+  format: 'yyyy/MM/dd', // Default mock format
+};
+
 const mockNews: News[] = [
   {
     id: '1',
@@ -221,6 +230,19 @@ export const getConfig = async (): Promise<Config> => {
   } catch (error) {
     console.error('Failed to fetch config:', error);
     return mockConfig;
+  }
+};
+
+export const getDateConfig = async (): Promise<DateConfig> => {
+  if (isMock || !client) {
+    return mockDateConfig;
+  }
+  try {
+    const data = await client.getObject<DateConfig>({ endpoint: 'date' });
+    return data;
+  } catch (error) {
+    console.error('Failed to fetch date config:', error);
+    return mockDateConfig;
   }
 };
 
