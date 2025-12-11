@@ -44,7 +44,7 @@ export default async function WorkDetailPage({ params }: Props) {
           </h1>
 
           <div className="space-y-6 text-gray-600 dark:text-gray-300 leading-relaxed">
-            <p>{work.description}</p>
+            <p className="whitespace-pre-wrap">{work.description}</p>
           </div>
 
           <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800">
