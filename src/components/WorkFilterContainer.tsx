@@ -3,7 +3,7 @@
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { Work } from '@/lib/microcms';
 import WorkList from './WorkList';
-import CategoryFilter from './CategoryFilter';
+import CategoryDropdown from './CategoryDropdown';
 import SortDropdown from './SortDropdown';
 import { useEffect, useState } from 'react';
 
@@ -95,7 +95,7 @@ export default function WorkFilterContainer({ initialWorks }: Props) {
         </div>
       )}
 
-      <CategoryFilter
+      <CategoryDropdown
         categories={allCategories}
         selectedCategory={currentCategory}
       />

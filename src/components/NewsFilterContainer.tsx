@@ -4,7 +4,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { News } from '@/lib/microcms';
 import Link from 'next/link';
-import CategoryFilter from './CategoryFilter';
+import CategoryDropdown from './CategoryDropdown';
 import SortDropdown from './SortDropdown';
 import { useState } from 'react';
 
@@ -98,7 +98,7 @@ export default function NewsFilterContainer({ initialNews, dateFormat }: Props) 
         </div>
       )}
 
-      <CategoryFilter
+      <CategoryDropdown
         categories={allCategories}
         selectedCategory={currentCategory}
       />

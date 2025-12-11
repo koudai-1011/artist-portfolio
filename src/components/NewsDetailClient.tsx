@@ -64,7 +64,7 @@ export default function NewsDetailClient({ content, title }: Props) {
             <div
                 id="news-content"
                 className="prose prose-lg dark:prose-invert max-w-none prose-img:rounded-lg prose-a:text-blue-600 dark:prose-a:text-blue-400"
-                style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-words' }}
+                style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
                 dangerouslySetInnerHTML={{ __html: content }}
             />
 
